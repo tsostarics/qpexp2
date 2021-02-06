@@ -147,7 +147,7 @@ var lets_begin = {
 };
 exp_timeline.push(lets_begin)
 
-console.log(exp_timeline);
+// console.log(exp_timeline);
 
 // Progress bar, increments by 2.5% each trial
 var incr_val = 0.025;
@@ -185,6 +185,8 @@ var trial_1 = {
   on_finish: function(){
     progress_counter += incr_val
     jsPsych.setProgressBar(progress_counter);
+    jsPsych.data.addProperties(additional_properties)
+    saveToFirebase(subID, jsPsych.data.get().json());
   }
 }
 
@@ -258,7 +260,7 @@ function get_aud_files(block){
 // // Pass filenames to preloader
 var media_to_preload = get_aud_files(block_1_stims).concat('sound/placeholder.wav')
 media_to_preload = media_to_preload.concat(get_aud_files(block_2_stims))
-console.log(media_to_preload)
+// console.log(media_to_preload)
 /* 
 A function to randomize the order of our stimuli,
 both blocks will use the same order of trials

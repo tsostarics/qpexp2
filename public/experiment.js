@@ -64,7 +64,7 @@ exp_timeline.push(sound_test);
 
 // Answer choices for the demographics survey
 var yn_scale = ["Yes","No"]
-var gender_scale = ["Male","Female","Non-binary"]
+var gender_scale = ["Male","Female","Other"]
 
 // Multiple Choice questions
 var demographics_1 = {
@@ -102,8 +102,9 @@ exp_timeline.push(demographics_2)
 var instructions = {
   type: 'html-button-response',
   stimulus: "<p>You will be listening to a series of conversations between a man and a woman. They have a close relationship with one another and value honesty.</p>" +
-  "<p>On each trial, you will be given two buttons to listen to a conversation: Choice A and Choice B. The conversation in each is the same, <b>but the man's response at the end will differ slightly in the way that it's said.</b></p>"+
-  "<p>When you've listened to each of the choices, you will be asked to select the choice in which the man's response is more appropriate given the context of the conversation.</p>" +
+  "<p>Each conversation has two different endings. <b>Specifically, the endings will differ in the way the man responds to a question</b>. You will be asked to select which way sounds more appropriate given the context of the conversation.</p>" +
+  "<p>On each trial, you will use buttons labeled \"Play Choice A\" and \"Play Choice B\" to hear the two different ways the man responds.</p>"+
+  "<p>When you've listened to each of the choices, you will be asked to select the choice that sounds more appropriate using the buttons at the bottom labeled \"Select Choice A\" and \"Select Choice B\".</p>" +
   "<p>Each conversation is to be treated as completely independent from one trial to the next.</p>" +
   "<p>When you are ready to start, you may press the button below.</p>",
   choices: ['Ready to start'],
@@ -169,10 +170,10 @@ will play an audio file and display a likert scale with 1 text box
 */
 var trial_1 = {
   type: 'audiobuttons-forcedchoice',
-  stimulus: 'sound/placeholder.wav', // jsPsych.timelineVariable('aud_file'),
+  stimulus: jsPsych.timelineVariable('pre_aud'), //'sound/placeholder.wav', // 
   choices: jsPsych.timelineVariable('choices'),
   prompt: "Please select the response that you felt was more appropriate given the conversation.",
-  submit_choices: [{label: "Choice A"}, {label: "Choice B"}],
+  submit_choices: [{label: "Select Choice A"}, {label: "Select Choice B"}],
   data: {
     block: 1,
     word: jsPsych.timelineVariable('word'),
@@ -192,10 +193,10 @@ var trial_1 = {
 
 var trial_2 = {
   type: 'audiobuttons-forcedchoice',
-  stimulus: 'sound/placeholder.wav', // jsPsych.timelineVariable('aud_file'),
+  stimulus: jsPsych.timelineVariable('pre_aud'),//'sound/placeholder.wav', 
   choices: jsPsych.timelineVariable('choices'),
   prompt: "Please select the response that you felt was more appropriate given the conversation.",
-  submit_choices: [{label: "Choice A"}, {label: "Choice B"}],
+  submit_choices: [{label: "Select Choice A"}, {label: "Select Choice B"}],
   data: {
     block: 2,
     word: jsPsych.timelineVariable('word'),
@@ -251,7 +252,7 @@ function get_aud_files(block){
   file_strings = []
   var stim;
   for (stim of block){
-    // file_strings.push(stim.aud_file)
+    file_strings.push(stim.pre_aud)
     stim.choices.forEach(ch => file_strings.push(ch.aud_file))
   }
   return file_strings
@@ -260,7 +261,7 @@ function get_aud_files(block){
 // // Pass filenames to preloader
 var media_to_preload = get_aud_files(block_1_stims).concat('sound/placeholder.wav')
 media_to_preload = media_to_preload.concat(get_aud_files(block_2_stims))
-// console.log(media_to_preload)
+console.log(media_to_preload)
 /* 
 A function to randomize the order of our stimuli,
 both blocks will use the same order of trials
@@ -272,7 +273,10 @@ function randomize(item_num) {
   for(var i = 0; i < item_num; i++){
     ordering.push(i)
   }
-  ordering = jsPsych.randomization.shuffle(ordering);
+  while(ordering[0] < 12){
+    ordering = jsPsych.randomization.shuffle(ordering);
+  }
+  console.log(ordering);
   return(ordering)
 };
 
